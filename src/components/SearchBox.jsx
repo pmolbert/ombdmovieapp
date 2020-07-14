@@ -1,4 +1,5 @@
 import React from "react";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 
 const SearchBox = (props) => {
   let textInput = React.createRef();
@@ -11,15 +12,25 @@ const SearchBox = (props) => {
   };
   return (
     <div>
-      <form>
-        <div>
-          <label for="title">Movie title:</label>
-          <input ref={textInput} type="text" id="title" name="title"></input>
-        </div>
-        <div>
-          <button onClick={handleClick}>Search</button>
-        </div>
-      </form>
+      <Container>
+        <Form>
+          <Row>
+            <Col>
+              <Form.Label>Movie title:</Form.Label>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Control ref={textInput} type="text"></Form.Control>
+            </Col>
+            <Col>
+              <Button variant="primary" onClick={handleClick}>
+                Search
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </Container>
     </div>
   );
 };

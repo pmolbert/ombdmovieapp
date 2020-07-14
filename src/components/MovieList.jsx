@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Movie from "./Movie";
 import SearchBox from "./SearchBox";
+import { Container, Row, Modal } from "react-bootstrap";
+import MovieDetails from "./MovieDetails";
 
 const MovieList = () => {
   const API_KEY = "ce762116";
-  const [data, setData] = useState(null);
+  const [movies, setMovies] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [q, setQuery] = useState("batman");
   const [activateModal, setActivateModal] = useState(false);
-  const [detail, setShowDetail] = useState(false);
+  const [details, setShowDetails] = useState(false);
   const [detailRequest, setDetailRequest] = useState(false);
 
   useEffect(() => {
     setLoading(true);
+    setMovies(null);
     setError(null);
-    setData(null);
 
     fetch(`http://www.omdbapi.com/?s=${q}&apikey=${API_KEY}`)
       .then((res) => res)
@@ -24,7 +26,7 @@ const MovieList = () => {
         if (response.Response === "False") {
           setError(response.Error);
         } else {
-          setData(response.Search);
+          setMovies(response.Search);
         }
 
         setLoading(false);
@@ -38,9 +40,29 @@ const MovieList = () => {
   return (
     <div>
       <SearchBox searchHandler={setQuery} />
-      {data !== null &&
-        data.length > 0 &&
-        data.map((result, index) => <Movie key={index} {...result} />)}
+      <Container>
+        <Row>
+          {movies !== null &&
+            movies.length > 0 &&
+            movies.map((result, index) => (
+              <Movie
+                key={index}
+                showDetails={setShowDetails}
+                detailRequest={setDetailRequest}
+                activateModal={setActivateModal}
+                {...result}
+              />
+            ))}
+        </Row>
+        <Modal show={activateModal} onHide={() => setActivateModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Detail</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <MovieDetails {...details} />
+          </Modal.Body>
+        </Modal>
+      </Container>
     </div>
   );
 };
