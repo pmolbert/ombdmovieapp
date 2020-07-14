@@ -6,21 +6,27 @@ const MovieDetails = (props) => {
     <Container>
       <Row>
         <Col>
-          <img src={props.Poster} alt={props.Title} />
+          <img
+            style={{ width: "inherit" }}
+            src={props.Poster}
+            alt={props.Title}
+          />
         </Col>
         <Col>
           <Row>
             <Col>
               <div>{props.Title}</div>
             </Col>
+          </Row>
+          <Row>
             <Col>
               <div>{props.Year}</div>
             </Col>
             <Col>
-              <div>{props.imdbRating}</div>
+              <div>Rating: {props.imdbRating}</div>
             </Col>
           </Row>
-          <Row>
+          <Row style={{ marginBottom: "15px" }}>
             <Col>
               <div>{props.Rated}</div>
               <div>{props.Runtime}</div>
@@ -29,7 +35,7 @@ const MovieDetails = (props) => {
           </Row>
           <Row>
             <Col>
-              <div>{props.Actors}</div>
+              <div style={{ marginBottom: "15px" }}>{props.Actors}</div>
               <div>{props.Plot}</div>
             </Col>
           </Row>

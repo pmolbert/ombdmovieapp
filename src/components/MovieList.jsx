@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Movie from "./Movie";
 import SearchBox from "./SearchBox";
-import { Container, Row, Modal } from "react-bootstrap";
+import { Container, Row, Modal, Spinner, Alert } from "react-bootstrap";
 import MovieDetails from "./MovieDetails";
 
 const MovieList = () => {
@@ -9,7 +9,7 @@ const MovieList = () => {
   const [movies, setMovies] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [q, setQuery] = useState("batman");
+  const [q, setQuery] = useState("jaws");
   const [activateModal, setActivateModal] = useState(false);
   const [details, setShowDetails] = useState(false);
   const [detailRequest, setDetailRequest] = useState(false);
@@ -42,6 +42,14 @@ const MovieList = () => {
       <SearchBox searchHandler={setQuery} />
       <Container>
         <Row>
+          {loading && (
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          )}
+
+          {error !== null && <Alert variant="danger">{error}</Alert>}
+
           {movies !== null &&
             movies.length > 0 &&
             movies.map((result, index) => (
@@ -59,7 +67,13 @@ const MovieList = () => {
             <Modal.Title>Detail</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <MovieDetails {...details} />
+            {detailRequest === false ? (
+              <MovieDetails {...details} />
+            ) : (
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            )}
           </Modal.Body>
         </Modal>
       </Container>
