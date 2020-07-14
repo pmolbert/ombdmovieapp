@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Movie from "./Movie";
 import SearchBox from "./SearchBox";
-import { Container, Row, Modal, Spinner, Alert } from "react-bootstrap";
 import MovieDetails from "./MovieDetails";
+import Paginate from "./Pagination";
+import { Container, Row, Modal, Spinner, Alert } from "react-bootstrap";
 
 const MovieList = () => {
   const API_KEY = "ce762116";
@@ -13,6 +14,8 @@ const MovieList = () => {
   const [activateModal, setActivateModal] = useState(false);
   const [details, setShowDetails] = useState(false);
   const [detailRequest, setDetailRequest] = useState(false);
+  const [totalResults, setTotalResults] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     setLoading(true);
@@ -20,6 +23,31 @@ const MovieList = () => {
     setError(null);
 
     fetch(`http://www.omdbapi.com/?s=${q}&apikey=${API_KEY}`)
+      .then((res) => res)
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.Response === "False") {
+          setError(response.Error);
+        } else {
+          setMovies(response.Search);
+          setTotalResults(response.totalResults);
+        }
+
+        setLoading(false);
+      })
+      .catch(({ message }) => {
+        setError(message);
+        setLoading(false);
+      });
+  }, [q]);
+
+  const nextPage = (pageNumber) => {
+    setLoading(true);
+    setMovies(null);
+    setError(null);
+    setCurrentPage(pageNumber);
+
+    fetch(`http://www.omdbapi.com/?s=${q}&apikey=${API_KEY}&page=${pageNumber}`)
       .then((res) => res)
       .then((res) => res.json())
       .then((response) => {
@@ -35,7 +63,7 @@ const MovieList = () => {
         setError(message);
         setLoading(false);
       });
-  }, [q]);
+  };
 
   return (
     <div>
@@ -76,6 +104,15 @@ const MovieList = () => {
             )}
           </Modal.Body>
         </Modal>
+        {totalResults > 10 ? (
+          <Paginate
+            pages={totalResults}
+            nextPage={nextPage}
+            currentPage={currentPage}
+          />
+        ) : (
+          ""
+        )}
       </Container>
     </div>
   );
